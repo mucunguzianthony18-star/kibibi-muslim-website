@@ -63,3 +63,38 @@ img { max-width: 100%; display: block; }
   .hero-actions { justify-content: flex-start; }
   .hero-badge img { width: 280px; height: 280px; }
 }
+/* Sections */
+.section { padding: 3rem 0; }
+.section.alt { background: var(--cream); }
+.section-title { text-align: center; color: var(--green); font-size: 1.6rem; margin-bottom: 1.5rem; position: relative; }
+.section-title.left { text-align: left; }
+.cards { display: grid; gap: 1rem; }
+.card { background: var(--white); border: 1px solid #e3dcc6; border-top: 4px solid var(--gold); border-radius: 8px; padding: 1.2rem; }
+.card h3 { color: var(--green); font-size: 1.15rem; }
+.card p { margin: 0; color: var(--muted); }
+@media (min-width: 800px) { .cards { grid-template-columns: repeat(3, 1fr); } }
+
+.welcome { display: grid; gap: 1.5rem; align-items: center; }
+.photo-placeholder { background: #d9d2bb; color: var(--muted); display: flex; align-items: center; justify-content: center; min-height: 220px; border-radius: 8px; font-style: italic; }
+@media (min-width: 800px) { .welcome { grid-template-columns: 1fr 1.2fr; } }
+
+.quick { display: grid; grid-template-columns: repeat(2, 1fr); gap: .8rem; }
+.quick-item { background: var(--green); color: var(--white); text-align: center; padding: 1.2rem .5rem; border-radius: 8px; font-weight: 600; border-bottom: 3px solid var(--gold); }
+@media (min-width: 800px) { .quick { grid-template-columns: repeat(4, 1fr); } }
+
+/* Page banner */
+.page-banner { background: var(--green); color: var(--white); padding: 2.2rem 0; border-bottom: 4px solid var(--gold); }
+.page-banner h1 { font-size: 1.9rem; margin: 0; }
+.page-banner p { color: var(--cream); margin: .4rem 0 0; }
+
+/* Footer */
+.site-footer { background: var(--green-dark); color: var(--cream); margin-top: 2rem; }
+.footer-grid { display: grid; gap: 1.5rem; padding-top: 2.2rem; padding-bottom: 1.5rem; }
+.site-footer h4 { color: var(--gold); }
+.site-footer ul { list-style: none; margin: 0; padding: 0; }
+.site-footer li { margin-bottom: .3rem; }
+.site-footer p { margin: .2rem 0; }
+.motto { font-family: var(--font-head); font-style: italic; }
+.portal-link { color: var(--gold); font-weight: 700; display: inline-block; margin-top: .5rem; }
+.footer-bottom { text-align: center; font-size: .8rem; padding: .9rem 1rem; border-top: 1px solid rgba(255,255,255,.12); }
+@media (min-width: 800px) { .footer-grid { grid-template-columns: 1.4fr 1fr 1fr; } }
