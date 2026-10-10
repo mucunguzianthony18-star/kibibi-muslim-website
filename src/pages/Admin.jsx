@@ -9,12 +9,15 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   onSnapshot,
   orderBy,
   query,
   serverTimestamp,
+  setDoc,
 } from 'firebase/firestore'
 import { auth, db, cloudinary } from '../firebase.js'
+import { editablePages } from '../pageList.js'
 import PageBanner from '../components/PageBanner.jsx'
 
 const MAX_IMAGE_MB = 10
@@ -107,6 +110,87 @@ function Login() {
       <button className="btn btn-gold" type="submit" disabled={busy}>
         {busy ? 'Signing in...' : 'Sign in'}
       </button>
+    </form>
+  )
+}
+
+function PageEditor() {
+  const [slug, setSlug] = useState(editablePages[0].slug)
+  const [body, setBody] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [msg, setMsg] = useState('')
+
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+    setMsg('')
+    getDoc(doc(db, 'pages', slug))
+      .then((snap) => {
+        if (cancelled) return
+        setBody(snap.exists() ? snap.data().body || '' : '')
+        setLoading(false)
+      })
+      .catch((err) => {
+        if (cancelled) return
+        setMsg('Could not load: ' + err.message)
+        setLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [slug])
+
+  async function save(e) {
+    e.preventDefault()
+    setSaving(true)
+    setMsg('')
+    try {
+      await setDoc(doc(db, 'pages', slug), {
+        body,
+        updatedAt: serverTimestamp(),
+      })
+      setMsg('Saved. The page is now updated.')
+    } catch (err) {
+      setMsg('Error: ' + err.message)
+    }
+    setSaving(false)
+  }
+
+  const current = editablePages.find((p) => p.slug === slug)
+
+  return (
+    <form className="admin-box wide" onSubmit={save}>
+      <h2>Edit a page</h2>
+      <label>Which page?</label>
+      <select value={slug} onChange={(e) => setSlug(e.target.value)}>
+        {editablePages.map((p) => (
+          <option key={p.slug} value={p.slug}>
+            {p.title}
+          </option>
+        ))}
+      </select>
+
+      <label>Text for “{current.title}”</label>
+      <textarea
+        value={loading ? '' : body}
+        onChange={(e) => setBody(e.target.value)}
+        placeholder={loading ? 'Loading...' : 'Type the page text here...'}
+        disabled={loading}
+      />
+      <p className="admin-help">
+        Leave a blank line between paragraphs. Start a line with <b>## </b> for
+        a heading (put a blank line after it). Start lines with <b>- </b> to
+        make a bullet list.
+      </p>
+
+      <button className="btn btn-gold" type="submit" disabled={saving || loading}>
+        {saving ? 'Saving...' : 'Save page'}
+      </button>
+      <a className="admin-view" href={current.path} target="_blank" rel="noreferrer">
+        View page
+      </a>
+      {msg && <p className="admin-msg">{msg}</p>}
     </form>
   )
 }
@@ -204,7 +288,9 @@ function GalleryManager() {
     <div>
       <form className="admin-box" onSubmit={upload}>
         <h2>Upload a photo or video</h2>
-        <label>File (photo up to {MAX_IMAGE_MB} MB, video up to {MAX_VIDEO_MB} MB)</label>
+        <label>
+          File (photo up to {MAX_IMAGE_MB} MB, video up to {MAX_VIDEO_MB} MB)
+        </label>
         <input
           type="file"
           accept="image/*,video/*"
@@ -265,6 +351,7 @@ function GalleryManager() {
 
 export default function Admin() {
   const [user, setUser] = useState(undefined)
+  const [tab, setTab] = useState('pages')
 
   useEffect(() => onAuthStateChanged(auth, setUser), [])
 
@@ -283,7 +370,21 @@ export default function Admin() {
                   Sign out
                 </button>
               </div>
-              <GalleryManager />
+              <div className="admin-tabs">
+                <button
+                  className={tab === 'pages' ? 'admin-tab active' : 'admin-tab'}
+                  onClick={() => setTab('pages')}
+                >
+                  Pages
+                </button>
+                <button
+                  className={tab === 'gallery' ? 'admin-tab active' : 'admin-tab'}
+                  onClick={() => setTab('gallery')}
+                >
+                  Gallery
+                </button>
+              </div>
+              {tab === 'pages' ? <PageEditor /> : <GalleryManager />}
             </>
           ) : (
             <Login />
