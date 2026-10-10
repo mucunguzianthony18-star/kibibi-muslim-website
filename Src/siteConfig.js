@@ -6,7 +6,7 @@ export const school = {
   location: 'Kibibi, Butambala District, Uganda',
   phone: '+256 000 000 000',
   email: 'info@example.com',
-  portalUrl: 'https://kms-sdm.netlify.app',
+  portalUrl: 'https://kms-sdm.vercel.app',
 }
 
 export const nav = [
