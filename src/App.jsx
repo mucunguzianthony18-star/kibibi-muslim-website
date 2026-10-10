@@ -4,18 +4,15 @@ import Footer from './components/Footer.jsx'
 import ScrollToTop from './components/ScrollToTop.jsx'
 import Home from './pages/Home.jsx'
 import Admin from './pages/Admin.jsx'
+import Gallery from './pages/Gallery.jsx'
+import Page from './pages/Page.jsx'
 import Placeholder from './pages/Placeholder.jsx'
+import { editablePages } from './pageList.js'
 
-const pages = [
-  ['/about', 'About Us', 'History, vision, mission, values and leadership.'],
-  ['/academics', 'Academics', 'Subjects, departments and academic programmes.'],
-  ['/admissions', 'Admissions', 'Admission requirements, process and fees.'],
-  ['/students', 'Student Life', 'Clubs, leadership, sports and achievements.'],
+// Pages not editable yet (News and Downloads get their own tools later)
+const comingSoon = [
   ['/news', 'News & Events', 'School announcements, activities and events.'],
-  ['/gallery', 'Gallery', 'Photos from around the school.'],
-  ['/staff', 'Staff', 'Administration and teaching staff.'],
   ['/downloads', 'Downloads', 'Prospectus, admission forms and notices.'],
-  ['/contact', 'Contact Us', 'Location, phone, email and enquiries.'],
 ]
 
 export default function App() {
@@ -27,7 +24,15 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/admin" element={<Admin />} />
-          {pages.map(([path, title, blurb]) => (
+          <Route path="/gallery" element={<Gallery />} />
+          {editablePages.map((p) => (
+            <Route
+              key={p.slug}
+              path={p.path}
+              element={<Page slug={p.slug} title={p.title} blurb={p.blurb} />}
+            />
+          ))}
+          {comingSoon.map(([path, title, blurb]) => (
             <Route
               key={path}
               path={path}
